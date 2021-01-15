@@ -5,7 +5,7 @@ def lex(str="")
     return sarray
 end
 
-def parser(tokens)
+def parse(tokens)
     list = []
     for token in tokens do
         case token
@@ -31,26 +31,29 @@ $define["+"] = -> (x,y){x + y}
 $define["-"] = -> (x,y){x - y}
 $define["*"] = -> (x,y){x * y}
 $define["/"] = -> (x,y){x / y}
-$define["define"] = -> (x,y){ $define[x] = y}
-#$define["lambda"] = -> (x,y){ (x){y} }
+$define["define"] = -> (x,y){ $define[x] = y }
+$define["lambda"] = -> (params,exp){ 
+    params_list = eval(params)
+    for elem in params_list do
+        $define[elem] = ""
+    end
+    return ->(x,y){
+        $define[params_list[0]] = x
+        $define[params_list[1]] = y
+        eval(exp) 
+    }
+}
 def eval(list)
-    if list.instance_of?(Array) then        
-        arg1 = eval(list[1])
-        arg2 = eval(list[2])
-        $define[list[0]].call(arg1,arg2)
+    if list.instance_of?(Array) then
+        if list.count == 2 then
+            return list
+        else
+            arg1 = eval(list[1])
+            arg2 = list[0] == "lambda" ? list[2] : eval(list[2])
+            ret = $define[list[0]].call(arg1,arg2)
+            return list[0] == "define" ? list[1] : ret
+        end
     else
-        return list.to_i
+        return list =~ /^\d+$/ ? list.to_i : $define[list] != nil ? $define[list] : list.to_s
     end
 end
-
-# 文字列をトークンに分解
-tokens = lex("(+ 3 (- (* 4 2) 1))")
-
-# トークンをリストに変換
-list = parser(tokens)
-
-# (f x y) の評価
-ret = eval(list)
-
-# 結果の表示
-p ret
