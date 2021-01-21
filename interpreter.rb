@@ -66,7 +66,7 @@ class Interpreter
                 if @define[list] != nil then
                      return @define[list] 
                 else 
-                    return list.to_s[/^\"*([^\"]*)\"*$/,1]
+                    return list =~ /^\"(.*)\"$/ ? list.to_s[/^\"(.*)\"$/,1] : list.to_s
                 end
             end
         end
