@@ -21,6 +21,9 @@ class TestInterpreter < Test::Unit::TestCase
     def test_four_arithmetic_operations
         scheme = "(+ 3 (- (* 4 2) 1))"
         assert_equal(10,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+
+        scheme = "(+ \"古今\" \"東西\")"
+        assert_equal("古今東西",@ip.evaluate(@ip.parse(@ip.lex(scheme))))
     end
 
     def test_define

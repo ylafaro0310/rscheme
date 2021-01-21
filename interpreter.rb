@@ -1,3 +1,5 @@
+require_relative "list.rb"
+
 class Interpreter
     def initialize()
         @define = {}
@@ -10,7 +12,7 @@ class Interpreter
             params_list = evaluate(params)
             @define[params_list.get(0)] = ""
             @define[params_list.get(1)] = ""
-            
+
             return ->(x,y){
                 @define[params_list.get(0)] = x
                 @define[params_list.get(1)] = y
@@ -58,7 +60,15 @@ class Interpreter
                 return list.get(0) == "define" ? list.get(1) : ret
             end
         else
-            return list =~ /^\d+$/ ? list.to_i : @define[list] != nil ? @define[list] : list.to_s
+            if list =~ /^\d+$/ then 
+                return list.to_i
+            else 
+                if @define[list] != nil then
+                     return @define[list] 
+                else 
+                    return list.to_s[/^\"*([^\"]*)\"*$/,1]
+                end
+            end
         end
     end
 end    
