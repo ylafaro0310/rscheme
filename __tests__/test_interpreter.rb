@@ -24,6 +24,9 @@ class TestInterpreter < Test::Unit::TestCase
 
         scheme = "(+ \"古今\" \"東西\")"
         assert_equal("古今東西",@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+        
+        scheme = "(+ \"He said \"I'm fine.\".\" \"He is cool.\")"
+        assert_equal("He said \"I'm fine.\".He is cool.",@ip.evaluate(@ip.parse(@ip.lex(scheme))))
     end
 
     def test_define

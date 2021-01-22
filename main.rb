@@ -16,6 +16,9 @@ puts ip.evaluate(ip.parse(ip.lex(scheme)))
 scheme = "(average 2 6)"
 puts ip.evaluate(ip.parse(ip.lex(scheme)))
 
-scheme = "(+ \"古今\" \"東西\")"
+scheme = "(+ \"He said \"I'm fine.\".\" \" He is cool.\")"
 puts ip.evaluate(ip.parse(ip.lex(scheme)))
 
+scheme = "(+ \"古今\" \"東西\")"
+puts ip.evaluate(ip.parse(ip.lex(scheme)))
+ 
