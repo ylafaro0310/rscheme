@@ -3,19 +3,56 @@ require_relative "list.rb"
 class Interpreter
     def initialize()
         @define = {}
-        @define["+"] = -> (x,y){x + y}
-        @define["-"] = -> (x,y){x - y}
-        @define["*"] = -> (x,y){x * y}
-        @define["/"] = -> (x,y){x / y}
-        @define["define"] = -> (x,y){ @define[x] = y }
-        @define["lambda"] = -> (params,exp){ 
+        @define["+"] = -> (list){
+            ret = evaluate(list.car)
+            args = list.cdr
+            while args != nil
+                ret = ret + evaluate(args.car)
+                args = args.cdr
+            end
+            return ret
+        }
+        @define["-"] = -> (list){
+            ret = evaluate(list.car)
+            args = list.cdr
+            while args != nil
+                ret = ret - evaluate(args.car)
+                args = args.cdr
+            end
+            return ret
+        }
+        @define["*"] = -> (list){
+            ret = evaluate(list.car)
+            args = list.cdr
+            while args != nil
+                ret = ret * evaluate(args.car)
+                args = args.cdr
+            end
+            return ret
+        }
+        @define["/"] = -> (list){
+            p list
+            ret = evaluate(list.car)
+            args = list.cdr
+            while args != nil
+                ret = ret / evaluate(args.car)
+                args = args.cdr
+            end
+            return ret
+        }
+        @define["define"] = -> (list){ 
+            @define[list.car] = evaluate(list.cdr.car)
+        }
+        @define["lambda"] = -> (list){ 
+            params = list.car
+            exp = list.cdr.car
             params_list = evaluate(params)
             @define[params_list.get(0)] = ""
             @define[params_list.get(1)] = ""
 
-            return ->(x,y){
-                @define[params_list.get(0)] = x
-                @define[params_list.get(1)] = y
+            return ->(list){
+                @define[params_list.get(0)] = evaluate(list.car)
+                @define[params_list.get(1)] = evaluate(list.cdr.car)
                 evaluate(exp) 
             }
         }
@@ -68,14 +105,16 @@ class Interpreter
         return list.start.car
     end
 
+    def define_lookup(val)
+        return  @define.key?(val)
+    end
+
     def evaluate(list)
         if list.instance_of?(List) then
             if list.count == 2 then
                 return list
             else
-                arg1 = evaluate(list.get(1))
-                arg2 = list.get(0) == "lambda" ? list.get(2) : evaluate(list.get(2))
-                ret = @define[list.get(0)].call(arg1,arg2)
+                ret = @define[list.get(0)].call(list.select(1))
                 return list.get(0) == "define" ? list.get(1) : ret
             end
         else

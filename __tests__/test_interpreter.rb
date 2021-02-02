@@ -15,10 +15,12 @@ class TestInterpreter < Test::Unit::TestCase
         tmp = @ip.parse(@ip.lex(scheme))
         assert_equal("+",tmp.start.car)
         assert_equal("-",tmp.end.car.start.car)
-        p tmp
     end
 
     def test_four_arithmetic_operations
+        scheme = "(+ 3 2 3)"
+        assert_equal(8,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+
         scheme = "(+ 3 (- (* 4 2) 1))"
         assert_equal(10,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
 
@@ -43,6 +45,11 @@ class TestInterpreter < Test::Unit::TestCase
         
         scheme = "(average 2 6)"
         assert_equal(4,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+    end
+
+    def test_define_lookup
+        assert_equal(true,@ip.define_lookup("+"))
+        assert_equal(false,@ip.define_lookup("aaa"))
     end
 end
     
