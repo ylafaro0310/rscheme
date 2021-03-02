@@ -31,7 +31,6 @@ class Interpreter
             return ret
         }
         @define["/"] = -> (list){
-            p list
             ret = evaluate(list.car)
             args = list.cdr
             while args != nil
@@ -39,6 +38,12 @@ class Interpreter
                 args = args.cdr
             end
             return ret
+        }
+        @define["car"] = -> (list){
+            return list.car.start.car
+        }
+        @define["cdr"] = -> (list){
+            return list.car.start.cdr
         }
         @define["define"] = -> (list){ 
             @define[list.car] = evaluate(list.cdr.car)
@@ -53,7 +58,7 @@ class Interpreter
             return ->(list){
                 @define[params_list.get(0)] = evaluate(list.car)
                 @define[params_list.get(1)] = evaluate(list.cdr.car)
-                evaluate(exp) 
+                return evaluate(exp) 
             }
         }
     end
@@ -111,7 +116,7 @@ class Interpreter
 
     def evaluate(list)
         if list.instance_of?(List) then
-            if list.count == 2 then
+            if !@define.include?(list.get(0)) and list.count == 2 then
                 return list
             else
                 ret = @define[list.get(0)].call(list.select(1))
@@ -127,6 +132,16 @@ class Interpreter
                     return list =~ /^\"(.*)\"$/ ? list.to_s[/^\"(.*)\"$/,1] : list.to_s
                 end
             end
+        end
+    end
+
+    def print(list)
+        if list.instance_of?(List) then
+            return "(" + print(list.start) + ")"
+        elsif list.instance_of?(ListItem) then
+            return print(list.car) + " " + print(list.cdr)
+        else
+            return list.to_s
         end
     end
 end    

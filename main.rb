@@ -21,4 +21,9 @@ puts ip.evaluate(ip.parse(ip.lex(scheme)))
 
 scheme = "(+ \"古今\" \"東西\")"
 puts ip.evaluate(ip.parse(ip.lex(scheme)))
- 
+
+scheme = "(car (1 2 3))"
+puts ip.print(ip.evaluate(ip.parse(ip.lex(scheme))))
+
+scheme = "(cdr (1 2 3 4))"
+puts ip.print(ip.evaluate(ip.parse(ip.lex(scheme))))
