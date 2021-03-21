@@ -23,11 +23,11 @@ class Interpreter
         @builtin.evaluate(list)
     end
     
-     def print(cell)
-        if cell.instance_of?(Cell) then
-            return "[" + print(cell.car) + " " + print(cell.cdr) + "]"
+     def print(list)
+        if list.instance_of?(Cell) then
+            return "[" + print(list.car) + " " + print(list.cdr) + "]"
         else
-            return cell.to_s
+            return list.to_s
         end
     end
 end    
