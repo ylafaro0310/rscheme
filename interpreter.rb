@@ -27,7 +27,13 @@ class Interpreter
         if list.instance_of?(Cell) then
             return "[" + print(list.car) + " " + print(list.cdr) + "]"
         else
-            return list.to_s
+            if list == true then
+                return "#t"
+            elsif list == false then
+                return "#f"
+            else
+                return list.to_s
+            end
         end
     end
 end    

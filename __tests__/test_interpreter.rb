@@ -46,6 +46,26 @@ class TestInterpreter < Test::Unit::TestCase
         scheme = "(average 2 6)"
         assert_equal(4,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
     end 
+
+    def test_and
+        scheme = "(and #f 1 2)"
+        assert_equal(false,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+    end
+
+    def test_or
+        scheme = "(or #f 1 2)"
+        assert_equal(1,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+    end
+
+    def test_if
+        scheme = "(if (> 3 2) \"true\" \"false\")"
+        assert_equal("true",@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+    end
+
+    def test_cond
+        scheme = "(cond ((> 3 4) (+ 1 2)) (#t (+ 2 3)) ((= 3 4) (- 4 2)) (else (+ 10 2)))"
+        assert_equal(5,@ip.evaluate(@ip.parse(@ip.lex(scheme))))
+    end
 end
     
 
